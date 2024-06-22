@@ -1,4 +1,5 @@
 import datetime
+import locale
 
 import pandas as pd
 import streamlit as st
@@ -10,9 +11,8 @@ def round_to_two(inp: float):
 
 
 def format_inr(number):
-    s, *d = str(number).partition(".")
-    r = ",".join([s[x-2:x] for x in range(-3, -len(s), -2)][::-1] + [s[-3:]])
-    return "".join([r] + d)
+    locale.setlocale(locale.LC_ALL, "en_IN")
+    return locale.currency(number, grouping=True)
 
 
 def gen_table(
