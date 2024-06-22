@@ -2,20 +2,17 @@ import datetime
 
 import pandas as pd
 import streamlit as st
-import plotly.express as px
 import plotly.graph_objects as go
-
-import locale
-
-locale.setlocale(locale.LC_ALL, "en_IN")
 
 
 def round_to_two(inp: float):
     return round(inp, 2)
 
 
-def format_inr(inp: float):
-    return locale.currency(inp, grouping=True)
+def format_inr(number):
+    s, *d = str(number).partition(".")
+    r = ",".join([s[x-2:x] for x in range(-3, -len(s), -2)][::-1] + [s[-3:]])
+    return "".join([r] + d)
 
 
 def gen_table(
@@ -192,7 +189,7 @@ if __name__ == "__main__":
     df = pd.DataFrame(df_records)
 
     st.markdown(
-        f"## FIRE @ {locale.currency(int(df.fire_target[0]), grouping=True)}, can be achieved at {df[df['fire_diff'] > 0]['age'].min()}"
+        f"## FIRE @ ₹{format_inr(int(df.fire_target[0]))}. Can be achieved at {df[df['fire_diff'] > 0]['age'].min()}"
     )
 
     fig = go.Figure()
